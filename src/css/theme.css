@@ -1,0 +1,20 @@
+@font-face {
+	font-family: Onest Bold;
+	src: url(../fonts/OnestBold1602-hint.ttf);
+}
+@font-face {
+	font-family: Onest Regular;
+	src: url(../fonts/OnestRegular1602-hint.ttf);
+}
+
+@font-face {
+	font-family: "Minecraft";
+	src: url("../fonts/minecraft.woff2") format("woff2");
+}
+
+a:focus {
+	box-shadow: none !important;
+}
+button:focus {
+	box-shadow: none !important;
+}
