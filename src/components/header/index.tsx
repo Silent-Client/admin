@@ -49,6 +49,23 @@ function Header() {
 									Add cosmetics
 								</Link>
 							</RLink>
+							<RLink to="/give_cosmetics">
+								<Link
+									color={
+										location.pathname === "/give_cosmetics"
+											? "white"
+											: "rgb(114, 114, 114)"
+									}
+									fontSize="18px"
+									fontWeight={600}
+									_hover={{
+										color: "white",
+										textDecoration: "none",
+									}}
+								>
+									Give cosmetics
+								</Link>
+							</RLink>
 							<RLink to="/update_version">
 								<Link
 									color={

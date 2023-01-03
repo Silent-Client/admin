@@ -11,6 +11,7 @@ import {
 	Select,
 	Box,
 	SimpleGrid,
+	Checkbox,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
@@ -29,6 +30,7 @@ export type CosmeticsType = {
 	category: string;
 	price: number;
 	update?: string;
+	is_private: 0;
 };
 
 function AddCosmetics() {
@@ -39,6 +41,8 @@ function AddCosmetics() {
 	const [texture, setTexture] = React.useState<string | null>(null);
 
 	const [update, setUpdate] = React.useState<string>("");
+
+	const [isPrivate, setIsPrivete] = React.useState<boolean>(false);
 
 	const {
 		register,
@@ -61,6 +65,7 @@ function AddCosmetics() {
 			formData.append("normal_price", data.price.toString());
 			formData.append("sale_price", data.price.toString());
 			formData.append("category", data.category);
+			formData.append("is_private", data.is_private.toString());
 
 			const { data: res } = await axios.post(
 				"https://api.silentclient.net/admin/add_cosmetics",
@@ -93,14 +98,18 @@ function AddCosmetics() {
 			});
 
 			navigate("/");
-		} catch (error: any) {
-			toast({
-				title: "Error!",
-				description: error?.message || `${error}`,
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			});
+		} catch (err: any) {
+			if (err?.response && err.response?.data && err.response.data?.errors) {
+				for (const error of err.response.data.errors) {
+					toast({
+						title: "Error!",
+						description: error.message,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+			}
 		} finally {
 			setIsLoading(false);
 		}
@@ -113,6 +122,11 @@ function AddCosmetics() {
 			<Stack direction={"column"} spacing={5} justifyContent="space-between">
 				<Center>
 					<form onSubmit={onSubmit}>
+						<Input
+							hidden
+							value={isPrivate ? 1 : 0}
+							{...register("is_private")}
+						/>
 						<Stack direction="column" spacing="10px">
 							<FormControl
 								onBlur={() => {
@@ -226,6 +240,16 @@ function AddCosmetics() {
 								{errors.price && (
 									<FormErrorMessage>This field is required</FormErrorMessage>
 								)}
+							</FormControl>
+							<FormControl>
+								<Checkbox
+									isChecked={isPrivate}
+									onChange={() => {
+										setIsPrivete(!isPrivate);
+									}}
+								>
+									Is private
+								</Checkbox>
 							</FormControl>
 							<Button w="full" type="submit" isDisabled={isLoading}>
 								Add cosmetics

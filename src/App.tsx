@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router";
 import Header from "./components/header";
 import { getAuth, getUser } from "./hooks/auth";
 import AddCosmetics from "./pages/AddCosmetics";
+import GiveCosmetics from "./pages/GiveCosmetics";
 import Login from "./pages/Login";
 import Main from "./pages/Main";
 import NotFound from "./pages/NotFound";
@@ -42,6 +43,10 @@ function App() {
 						<Route
 							path="/update_launcher"
 							element={getUser() ? <UpdateLauncher /> : <Login />}
+						/>
+						<Route
+							path="/give_cosmetics"
+							element={getUser() ? <GiveCosmetics /> : <Login />}
 						/>
 						<Route path="/login" element={<Login />} />
 

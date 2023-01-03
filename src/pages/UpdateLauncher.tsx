@@ -75,14 +75,18 @@ function UpdateLauncher() {
 			});
 
 			navigate("/");
-		} catch (error: any) {
-			toast({
-				title: "Error!",
-				description: error?.message || `${error}`,
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			});
+		} catch (err: any) {
+			if (err?.response && err.response?.data && err.response.data?.errors) {
+				for (const error of err.response.data.errors) {
+					toast({
+						title: "Error!",
+						description: error.message,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+				}
+			}
 		} finally {
 			setIsLoading(false);
 		}
