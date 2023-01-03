@@ -103,19 +103,34 @@ function GiveCosmetics() {
 			setIsLoading(true);
 			try {
 				const { data: capes } = await axios.get(
-					"https://api.silentclient.net/admin/capes"
+					"https://api.silentclient.net/admin/capes",
+					{
+						headers: {
+							Authorization: `Bearer ${getUser()?.accessToken}`,
+						},
+					}
 				);
 
 				setCapes(capes.capes);
 
 				const { data: wings } = await axios.get(
-					"https://api.silentclient.net/admin/wings"
+					"https://api.silentclient.net/admin/wings",
+					{
+						headers: {
+							Authorization: `Bearer ${getUser()?.accessToken}`,
+						},
+					}
 				);
 
 				setWings(wings.wings);
 
 				const { data: icons } = await axios.get(
-					"https://api.silentclient.net/admin/icons"
+					"https://api.silentclient.net/admin/icons",
+					{
+						headers: {
+							Authorization: `Bearer ${getUser()?.accessToken}`,
+						},
+					}
 				);
 
 				setIcons(icons.icons);
