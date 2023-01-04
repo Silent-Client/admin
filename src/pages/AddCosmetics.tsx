@@ -30,7 +30,6 @@ export type CosmeticsType = {
 	category: string;
 	price: number;
 	update?: string;
-	is_private: 0;
 };
 
 function AddCosmetics() {
@@ -65,7 +64,7 @@ function AddCosmetics() {
 			formData.append("normal_price", data.price.toString());
 			formData.append("sale_price", data.price.toString());
 			formData.append("category", data.category);
-			formData.append("is_private", data.is_private.toString());
+			formData.append("is_private", isPrivate ? "1" : "0");
 
 			const { data: res } = await axios.post(
 				"https://api.silentclient.net/admin/add_cosmetics",
@@ -122,11 +121,6 @@ function AddCosmetics() {
 			<Stack direction={"column"} spacing={5} justifyContent="space-between">
 				<Center>
 					<form onSubmit={onSubmit}>
-						<Input
-							hidden
-							value={isPrivate ? 1 : 0}
-							{...register("is_private")}
-						/>
 						<Stack direction="column" spacing="10px">
 							<FormControl
 								onBlur={() => {
