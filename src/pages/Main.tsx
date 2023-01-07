@@ -3,16 +3,19 @@ import axios from "axios";
 import React from "react";
 
 function Main() {
-	const [players, setPlayers] = React.useState<number>(0);
+	const [stats, setStats] = React.useState<{
+		players: number;
+		players_online: number;
+	}>({ players: 0, players_online: 0 });
 
 	React.useEffect(() => {
 		const getData = async () => {
 			try {
 				const { data: res } = await axios.get(
-					"https://players.silentclient.net/count"
+					"https://api.silentclient.net/stats"
 				);
 
-				setPlayers(res.count);
+				setStats(res.stats);
 			} catch {}
 		};
 
@@ -22,7 +25,11 @@ function Main() {
 	return (
 		<Box>
 			<Heading>Hello, admin!</Heading>
-			<Text>Players online: {players}</Text>
+			<Text>
+				Players: {stats.players}
+				<br />
+				Players online: {stats.players_online}
+			</Text>
 		</Box>
 	);
 }
