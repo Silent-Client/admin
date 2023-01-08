@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.9581af5b.css",
-    "main.js": "/static/js/main.250e927c.js",
+    "main.js": "/static/js/main.0f71faff.js",
     "static/js/27.abd2a82d.chunk.js": "/static/js/27.abd2a82d.chunk.js",
     "static/media/OnestBold1602-hint.ttf": "/static/media/OnestBold1602-hint.94a0458cbbe9d212ff5d.ttf",
     "static/media/OnestRegular1602-hint.ttf": "/static/media/OnestRegular1602-hint.851b8f253e8728ec40e3.ttf",
@@ -11,6 +11,6 @@
   },
   "entrypoints": [
     "static/css/main.9581af5b.css",
-    "static/js/main.250e927c.js"
+    "static/js/main.0f71faff.js"
   ]
 }
