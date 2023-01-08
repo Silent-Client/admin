@@ -5,6 +5,7 @@ import Header from "./components/header";
 import { getAuth, getUser } from "./hooks/auth";
 import AddCosmetics from "./pages/AddCosmetics";
 import GiveCosmetics from "./pages/GiveCosmetics";
+import GivePlus from "./pages/GivePlus";
 import Login from "./pages/Login";
 import Main from "./pages/Main";
 import NotFound from "./pages/NotFound";
@@ -47,6 +48,10 @@ function App() {
 						<Route
 							path="/give_cosmetics"
 							element={getUser() ? <GiveCosmetics /> : <Login />}
+						/>
+						<Route
+							path="/give_plus"
+							element={getUser() ? <GivePlus /> : <Login />}
 						/>
 						<Route path="/login" element={<Login />} />
 

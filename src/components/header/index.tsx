@@ -100,6 +100,23 @@ function Header() {
 									Update launcher
 								</Link>
 							</RLink>
+							<RLink to="/give_plus">
+								<Link
+									color={
+										location.pathname === "/give_plus"
+											? "white"
+											: "rgb(114, 114, 114)"
+									}
+									fontSize="18px"
+									fontWeight={600}
+									_hover={{
+										color: "white",
+										textDecoration: "none",
+									}}
+								>
+									Give plus
+								</Link>
+							</RLink>
 						</Stack>
 					</Center>
 				</Stack>
