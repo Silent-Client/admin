@@ -23,12 +23,13 @@ import FilePicker from "chakra-ui-file-picker";
 import StoreItem from "../components/StoreItem";
 
 export type CosmeticsType = {
-	texture: File;
+	texture: File[];
 	preview: File;
 	name: string;
 	type: "capes" | "wings" | "icons";
 	category: string;
 	price: number;
+	frame_delay: number;
 	update?: string;
 };
 
@@ -42,6 +43,7 @@ function AddCosmetics() {
 	const [update, setUpdate] = React.useState<string>("");
 
 	const [isPrivate, setIsPrivete] = React.useState<boolean>(false);
+	const [isAnimated, setIsAnimated] = React.useState<boolean>(false);
 
 	const {
 		register,
@@ -56,7 +58,9 @@ function AddCosmetics() {
 		setIsLoading(true);
 		try {
 			const formData = new FormData();
-			formData.append("texture", data.texture);
+			for (const texture of data.texture) {
+				formData.append("texture", texture);
+			}
 			formData.append("preview", data.preview);
 			formData.append("type", data.type);
 			formData.append("name", data.name);
@@ -65,6 +69,8 @@ function AddCosmetics() {
 			formData.append("sale_price", data.price.toString());
 			formData.append("category", data.category);
 			formData.append("is_private", isPrivate ? "1" : "0");
+			formData.append("is_animated", isAnimated ? "1" : "0");
+			formData.append("frame_delay", data.frame_delay.toString() || "0");
 
 			const { data: res } = await axios.post(
 				"https://api.silentclient.net/admin/add_cosmetics",
@@ -185,11 +191,11 @@ function AddCosmetics() {
 								<FilePicker
 									onFileChange={fileList => {
 										setTexture(URL.createObjectURL(fileList[0]));
-										setValue("texture", fileList[0]);
+										setValue("texture", fileList);
 									}}
 									placeholder={""}
 									clearButtonLabel="label"
-									multipleFiles={false}
+									multipleFiles={true}
 									accept="image/*"
 									hideClearButton={true}
 								/>
@@ -232,6 +238,33 @@ function AddCosmetics() {
 									{...register("price", { required: true })}
 								/>
 								{errors.price && (
+									<FormErrorMessage>This field is required</FormErrorMessage>
+								)}
+							</FormControl>
+							<FormControl>
+								<Checkbox
+									isChecked={isAnimated}
+									onChange={() => {
+										setIsAnimated(!isAnimated);
+									}}
+								>
+									Is animated
+								</Checkbox>
+							</FormControl>
+							<FormControl
+								onBlur={() => {
+									setUpdate(update === "f2" ? "f1" : "f2");
+								}}
+								isInvalid={errors.frame_delay ? true : false}
+							>
+								<FormLabel>Frame Delay</FormLabel>
+								<Input
+									isDisabled={isLoading}
+									type="number"
+									defaultValue={"150"}
+									{...register("frame_delay", { required: true })}
+								/>
+								{errors.frame_delay && (
 									<FormErrorMessage>This field is required</FormErrorMessage>
 								)}
 							</FormControl>

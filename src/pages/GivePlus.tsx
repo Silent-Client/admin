@@ -93,7 +93,7 @@ function GiveCosmetics() {
 			<form onSubmit={onSubmit}>
 				<Stack direction="column" spacing="10px">
 					<Center>
-						<Heading>Give cosmetics</Heading>
+						<Heading>Give plus</Heading>
 					</Center>
 					<FormControl isInvalid={errors.username ? true : false}>
 						<FormLabel>Username</FormLabel>

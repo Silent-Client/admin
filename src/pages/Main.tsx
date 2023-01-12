@@ -1,6 +1,7 @@
 import { Box, Heading, Text } from "@chakra-ui/react";
 import axios from "axios";
 import React from "react";
+import { Title } from "react-head-meta";
 
 function Main() {
 	const [stats, setStats] = React.useState<{
@@ -24,6 +25,7 @@ function Main() {
 
 	return (
 		<Box>
+			<Title title="Admin Dashboard | Silent Client" />
 			<Heading>Hello, admin!</Heading>
 			<Text>
 				Players: {stats.players}
