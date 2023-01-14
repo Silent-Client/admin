@@ -21,10 +21,12 @@ import { useNavigate } from "react-router";
 import { getUser } from "../hooks/auth";
 import FilePicker from "chakra-ui-file-picker";
 import StoreItem from "../components/StoreItem";
+import { SkinViewer } from "skinview3d";
+import { createGIF } from "gifshot";
 
 export type CosmeticsType = {
 	texture: File[];
-	preview: File;
+	preview: Blob;
 	name: string;
 	type: "capes" | "wings" | "icons";
 	category: string;
@@ -54,6 +56,154 @@ function AddCosmetics() {
 	} = useForm<CosmeticsType>();
 	const navigate = useNavigate();
 
+	const generatePreview = async (fileList: Blob[]) => {
+		if (fileList.length === 1) {
+			const skinViewer = new SkinViewer({
+				width: 685,
+				height: 685,
+				renderPaused: true,
+				zoom: 1.5,
+			});
+			skinViewer.camera.rotation.x = -2.9445863039147926;
+			skinViewer.camera.rotation.y = -0.24129215654046646;
+			skinViewer.camera.rotation.z = -3.0939339772752144;
+			skinViewer.camera.position.x = -6.712216245243998;
+			skinViewer.camera.position.y = 5.338818424577546;
+			skinViewer.camera.position.z = -26.748223451710654;
+
+			try {
+				await Promise.all([
+					skinViewer.loadSkin(null),
+					skinViewer.loadCape(URL.createObjectURL(fileList[0])),
+				]);
+			} catch {
+				toast({
+					title: "Error!",
+					description: "Is not cape texture!",
+					status: "error",
+					duration: 3000,
+					isClosable: true,
+				});
+				return;
+			}
+			skinViewer.render();
+
+			setPreview(skinViewer.canvas.toDataURL());
+			setTexture(URL.createObjectURL(fileList[0]));
+
+			skinViewer.dispose();
+			setValue("texture", fileList as File[]);
+
+			const blobBin = atob(skinViewer.canvas.toDataURL().split(",")[1]);
+			let array = [];
+			for (var i = 0; i < blobBin.length; i++) {
+				array.push(blobBin.charCodeAt(i));
+			}
+			const file = new Blob([new Uint8Array(array)], {
+				type: "image/png",
+			});
+
+			setValue("preview", file);
+		} else {
+			let files: string[] = [];
+			const skinViewer = new SkinViewer({
+				width: 685,
+				height: 685,
+				renderPaused: true,
+				zoom: 1.5,
+			});
+			for (const file of fileList) {
+				skinViewer.camera.rotation.x = -2.9445863039147926;
+				skinViewer.camera.rotation.y = -0.24129215654046646;
+				skinViewer.camera.rotation.z = -3.0939339772752144;
+				skinViewer.camera.position.x = -6.712216245243998;
+				skinViewer.camera.position.y = 5.338818424577546;
+				skinViewer.camera.position.z = -26.748223451710654;
+
+				try {
+					await Promise.all([
+						skinViewer.loadSkin(null),
+						skinViewer.loadCape(URL.createObjectURL(file)),
+					]);
+				} catch (e) {
+					toast({
+						title: "Error!",
+						description: `Is not cape texture! ${e}`,
+						status: "error",
+						duration: 3000,
+						isClosable: true,
+					});
+					return;
+				}
+				await skinViewer.render();
+				setPreview(
+					await addBackgroundColor(
+						skinViewer.canvas.toDataURL(),
+						"rgb(19, 19, 19)"
+					)
+				);
+				files.push(
+					await addBackgroundColor(
+						skinViewer.canvas.toDataURL(),
+						"rgb(19, 19, 19)"
+					)
+				);
+			}
+
+			skinViewer.dispose();
+
+			const options = {
+				images: files,
+				gifWidth: 685,
+				gifHeight: 685,
+				numWorkers: 2,
+				frameDuration: 0.01,
+				sampleInterval: 10,
+				numFrames: files.length,
+			};
+
+			createGIF(options, (obj: any) => {
+				setPreview(obj.image);
+				const blobBin = atob(obj.image.split(",")[1]);
+				let array = [];
+				for (var i = 0; i < blobBin.length; i++) {
+					array.push(blobBin.charCodeAt(i));
+				}
+				const file = new Blob([new Uint8Array(array)], {
+					type: "image/png",
+				});
+
+				setValue("preview", file);
+			});
+
+			setValue("texture", fileList as File[]);
+		}
+	};
+
+	async function addBackgroundColor(imageURI: string, backgroundColor: string) {
+		var image = new Image();
+		image.src = imageURI;
+
+		const canvas = document.createElement("canvas");
+		const ctx = canvas.getContext("2d");
+
+		canvas.width = 685;
+		canvas.height = 685;
+
+		// Add background color
+		if (!ctx) {
+			return imageURI;
+		}
+		ctx.fillStyle = backgroundColor;
+		await ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		await ctx.drawImage(image, 0, 0);
+
+		const url = canvas.toDataURL();
+
+		return url;
+	}
+
 	const onSubmit = handleSubmit(async data => {
 		setIsLoading(true);
 		try {
@@ -64,7 +214,11 @@ function AddCosmetics() {
 			if (!isAnimated) {
 				formData.append("texture", data.texture[0]);
 			}
-			formData.append("preview", data.preview);
+			if (data.type === "capes") {
+				formData.append("preview", data.preview);
+			} else {
+				formData.append("preview", data.texture[0]);
+			}
 			formData.append("type", data.type);
 			formData.append("name", data.name);
 			formData.append("price", data.price.toString());
@@ -134,6 +288,7 @@ function AddCosmetics() {
 							<FormControl
 								onBlur={() => {
 									setUpdate(update === "f2" ? "f1" : "f2");
+									generatePreview(getValues("texture"));
 								}}
 								isInvalid={errors.type ? true : false}
 							>
@@ -192,9 +347,13 @@ function AddCosmetics() {
 							>
 								<FormLabel>Texture</FormLabel>
 								<FilePicker
-									onFileChange={fileList => {
-										setTexture(URL.createObjectURL(fileList[0]));
-										setValue("texture", fileList);
+									onFileChange={async fileList => {
+										if (getValues("type") !== "capes") {
+											setTexture(URL.createObjectURL(fileList[0]));
+											setValue("texture", fileList);
+										} else {
+											generatePreview(fileList);
+										}
 									}}
 									placeholder={""}
 									clearButtonLabel="label"
@@ -206,28 +365,30 @@ function AddCosmetics() {
 									<FormErrorMessage>This field is required</FormErrorMessage>
 								)}
 							</FormControl>
-							<FormControl
-								onBlur={() => {
-									setUpdate(update === "f2" ? "f1" : "f2");
-								}}
-								isInvalid={errors.preview ? true : false}
-							>
-								<FormLabel>Preview</FormLabel>
-								<FilePicker
-									onFileChange={fileList => {
-										setPreview(URL.createObjectURL(fileList[0]));
-										setValue("preview", fileList[0]);
+							{getValues("type") !== "capes" && (
+								<FormControl
+									onBlur={() => {
+										setUpdate(update === "f2" ? "f1" : "f2");
 									}}
-									placeholder={""}
-									clearButtonLabel="label"
-									multipleFiles={false}
-									accept="image/*"
-									hideClearButton={true}
-								/>
-								{errors.preview && (
-									<FormErrorMessage>This field is required</FormErrorMessage>
-								)}
-							</FormControl>
+									isInvalid={errors.preview ? true : false}
+								>
+									<FormLabel>Preview</FormLabel>
+									<FilePicker
+										onFileChange={fileList => {
+											setPreview(URL.createObjectURL(fileList[0]));
+											setValue("preview", fileList[0]);
+										}}
+										placeholder={""}
+										clearButtonLabel="label"
+										multipleFiles={false}
+										accept="image/*"
+										hideClearButton={true}
+									/>
+									{errors.preview && (
+										<FormErrorMessage>This field is required</FormErrorMessage>
+									)}
+								</FormControl>
+							)}
 							<FormControl
 								onBlur={() => {
 									setUpdate(update === "f2" ? "f1" : "f2");
@@ -257,6 +418,7 @@ function AddCosmetics() {
 							<FormControl
 								onBlur={() => {
 									setUpdate(update === "f2" ? "f1" : "f2");
+									generatePreview(getValues("texture"));
 								}}
 								isInvalid={errors.frame_delay ? true : false}
 							>
