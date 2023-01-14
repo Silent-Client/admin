@@ -61,6 +61,9 @@ function AddCosmetics() {
 			for (const texture of data.texture) {
 				formData.append("texture", texture);
 			}
+			if (!isAnimated) {
+				formData.append("texture", data.texture[0]);
+			}
 			formData.append("preview", data.preview);
 			formData.append("type", data.type);
 			formData.append("name", data.name);
