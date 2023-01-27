@@ -33,7 +33,7 @@ export type CosmeticsType = {
 	price: number;
 	frame_delay: number;
 	update?: string;
-        shoulders?: File[];
+        shoulders?: File;
 };
 
 function AddCosmetics() {
