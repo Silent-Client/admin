@@ -229,7 +229,7 @@ function AddCosmetics() {
 			formData.append("is_private", isPrivate ? "1" : "0");
 			formData.append("is_animated", isAnimated ? "1" : "0");
 			formData.append("frame_delay", data.frame_delay.toString() || "0");
-                        if(data.type === "capes" && data?.shoudlers) {
+                        if(data.type === "capes" && data?.shoulders) {
                             formData.append("shoulders", data.shoulders);
                         }
 
