@@ -33,6 +33,7 @@ export type CosmeticsType = {
 	price: number;
 	frame_delay: number;
 	update?: string;
+        shoulders?: File[];
 };
 
 function AddCosmetics() {
@@ -228,6 +229,9 @@ function AddCosmetics() {
 			formData.append("is_private", isPrivate ? "1" : "0");
 			formData.append("is_animated", isAnimated ? "1" : "0");
 			formData.append("frame_delay", data.frame_delay.toString() || "0");
+                        if(data.type === "capes" && data?.shoudlers) {
+                            formData.append("shoulders", data.shoulders);
+                        }
 
 			const { data: res } = await axios.post(
 				"https://api.silentclient.net/admin/add_cosmetics",
@@ -388,7 +392,30 @@ function AddCosmetics() {
 										<FormErrorMessage>This field is required</FormErrorMessage>
 									)}
 								</FormControl>
-							)}
+							) || (
+                                                                <FormControl
+									onBlur={() => {
+										setUpdate(update === "f2" ? "f1" : "f2");
+									}}
+									isInvalid={errors.shoudelrs ? true : false}
+								>
+									<FormLabel>Preview</FormLabel>
+									<FilePicker
+										onFileChange={fileList => {
+											setPreview(URL.createObjectURL(fileList[0]));
+											setValue("shoudlers", fileList[0]);
+										}}
+										placeholder={""}
+										clearButtonLabel="label"
+										multipleFiles={false}
+										accept="image/*"
+										hideClearButton={true}
+									/>
+									{errors.shoudlers && (
+										<FormErrorMessage>This field is required</FormErrorMessage>
+									)}
+								</FormControl>
+                                                        )}
 							<FormControl
 								onBlur={() => {
 									setUpdate(update === "f2" ? "f1" : "f2");
