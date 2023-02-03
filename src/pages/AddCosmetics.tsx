@@ -399,7 +399,7 @@ function AddCosmetics() {
 									}}
 									isInvalid={errors.shoulders ? true : false}
 								>
-									<FormLabel>Preview</FormLabel>
+									<FormLabel>Shoulders</FormLabel>
 									<FilePicker
 										onFileChange={fileList => {
 											setPreview(URL.createObjectURL(fileList[0]));
