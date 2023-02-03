@@ -397,13 +397,13 @@ function AddCosmetics() {
 									onBlur={() => {
 										setUpdate(update === "f2" ? "f1" : "f2");
 									}}
-									isInvalid={errors.shoudelrs ? true : false}
+									isInvalid={errors.shoulders ? true : false}
 								>
 									<FormLabel>Preview</FormLabel>
 									<FilePicker
 										onFileChange={fileList => {
 											setPreview(URL.createObjectURL(fileList[0]));
-											setValue("shoudlers", fileList[0]);
+											setValue("shoulders", fileList[0]);
 										}}
 										placeholder={""}
 										clearButtonLabel="label"
@@ -411,7 +411,7 @@ function AddCosmetics() {
 										accept="image/*"
 										hideClearButton={true}
 									/>
-									{errors.shoudlers && (
+									{errors.shoulders && (
 										<FormErrorMessage>This field is required</FormErrorMessage>
 									)}
 								</FormControl>
