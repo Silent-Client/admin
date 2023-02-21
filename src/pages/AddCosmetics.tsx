@@ -1,28 +1,28 @@
 import {
-	Center,
-	Stack,
-	FormControl,
-	FormLabel,
-	FormErrorMessage,
-	Input,
-	Heading,
-	Button,
-	useToast,
-	Select,
 	Box,
-	SimpleGrid,
+	Button,
+	Center,
 	Checkbox,
+	FormControl,
+	FormErrorMessage,
+	FormLabel,
+	Heading,
+	Input,
+	Select,
+	SimpleGrid,
+	Stack,
+	useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
+import FilePicker from "chakra-ui-file-picker";
+import { createGIF } from "gifshot";
 import React from "react";
 import { Title } from "react-head-meta";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { getUser } from "../hooks/auth";
-import FilePicker from "chakra-ui-file-picker";
-import StoreItem from "../components/StoreItem";
 import { SkinViewer } from "skinview3d";
-import { createGIF } from "gifshot";
+import StoreItem from "../components/StoreItem";
+import { getUser } from "../hooks/auth";
 
 export type CosmeticsType = {
 	texture: File[];
@@ -33,7 +33,7 @@ export type CosmeticsType = {
 	price: number;
 	frame_delay: number;
 	update?: string;
-        shoulders?: File;
+	shoulders?: File;
 };
 
 function AddCosmetics() {
@@ -215,11 +215,9 @@ function AddCosmetics() {
 			if (!isAnimated) {
 				formData.append("texture", data.texture[0]);
 			}
-			if (data.type === "capes") {
-				formData.append("preview", data.preview);
-			} else {
-				formData.append("preview", data.texture[0]);
-			}
+
+			formData.append("preview", data.preview);
+
 			formData.append("type", data.type);
 			formData.append("name", data.name);
 			formData.append("price", data.price.toString());
@@ -229,9 +227,9 @@ function AddCosmetics() {
 			formData.append("is_private", isPrivate ? "1" : "0");
 			formData.append("is_animated", isAnimated ? "1" : "0");
 			formData.append("frame_delay", data.frame_delay.toString() || "0");
-                        if(data.type === "capes" && data?.shoulders) {
-                            formData.append("shoulders", data.shoulders);
-                        }
+			if (data.type === "capes" && data?.shoulders) {
+				formData.append("shoulders", data.shoulders);
+			}
 
 			const { data: res } = await axios.post(
 				"https://api.silentclient.net/admin/add_cosmetics",
@@ -369,7 +367,7 @@ function AddCosmetics() {
 									<FormErrorMessage>This field is required</FormErrorMessage>
 								)}
 							</FormControl>
-							{getValues("type") !== "capes" && (
+							{(getValues("type") !== "capes" && (
 								<FormControl
 									onBlur={() => {
 										setUpdate(update === "f2" ? "f1" : "f2");
@@ -392,8 +390,8 @@ function AddCosmetics() {
 										<FormErrorMessage>This field is required</FormErrorMessage>
 									)}
 								</FormControl>
-							) || (
-                                                                <FormControl
+							)) || (
+								<FormControl
 									onBlur={() => {
 										setUpdate(update === "f2" ? "f1" : "f2");
 									}}
@@ -402,7 +400,6 @@ function AddCosmetics() {
 									<FormLabel>Shoulders</FormLabel>
 									<FilePicker
 										onFileChange={fileList => {
-											setPreview(URL.createObjectURL(fileList[0]));
 											setValue("shoulders", fileList[0]);
 										}}
 										placeholder={""}
@@ -415,7 +412,7 @@ function AddCosmetics() {
 										<FormErrorMessage>This field is required</FormErrorMessage>
 									)}
 								</FormControl>
-                                                        )}
+							)}
 							<FormControl
 								onBlur={() => {
 									setUpdate(update === "f2" ? "f1" : "f2");
