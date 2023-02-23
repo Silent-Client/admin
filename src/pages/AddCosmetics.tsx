@@ -290,7 +290,6 @@ function AddCosmetics() {
 							<FormControl
 								onBlur={() => {
 									setUpdate(update === "f2" ? "f1" : "f2");
-									generatePreview(getValues("texture"));
 								}}
 								isInvalid={errors.type ? true : false}
 							>
@@ -350,12 +349,8 @@ function AddCosmetics() {
 								<FormLabel>Texture</FormLabel>
 								<FilePicker
 									onFileChange={async fileList => {
-										if (getValues("type") !== "capes") {
-											setTexture(URL.createObjectURL(fileList[0]));
-											setValue("texture", fileList);
-										} else {
-											generatePreview(fileList);
-										}
+										setTexture(URL.createObjectURL(fileList[0]));
+										setValue("texture", fileList);
 									}}
 									placeholder={""}
 									clearButtonLabel="label"
@@ -367,30 +362,31 @@ function AddCosmetics() {
 									<FormErrorMessage>This field is required</FormErrorMessage>
 								)}
 							</FormControl>
-							{(getValues("type") !== "capes" && (
-								<FormControl
-									onBlur={() => {
-										setUpdate(update === "f2" ? "f1" : "f2");
+
+							<FormControl
+								onBlur={() => {
+									setUpdate(update === "f2" ? "f1" : "f2");
+								}}
+								isInvalid={errors.preview ? true : false}
+							>
+								<FormLabel>Preview</FormLabel>
+								<FilePicker
+									onFileChange={fileList => {
+										setPreview(URL.createObjectURL(fileList[0]));
+										setValue("preview", fileList[0]);
 									}}
-									isInvalid={errors.preview ? true : false}
-								>
-									<FormLabel>Preview</FormLabel>
-									<FilePicker
-										onFileChange={fileList => {
-											setPreview(URL.createObjectURL(fileList[0]));
-											setValue("preview", fileList[0]);
-										}}
-										placeholder={""}
-										clearButtonLabel="label"
-										multipleFiles={false}
-										accept="image/*"
-										hideClearButton={true}
-									/>
-									{errors.preview && (
-										<FormErrorMessage>This field is required</FormErrorMessage>
-									)}
-								</FormControl>
-							)) || (
+									placeholder={""}
+									clearButtonLabel="label"
+									multipleFiles={false}
+									accept="image/*"
+									hideClearButton={true}
+								/>
+								{errors.preview && (
+									<FormErrorMessage>This field is required</FormErrorMessage>
+								)}
+							</FormControl>
+
+							{getValues("type") === "capes" && (
 								<FormControl
 									onBlur={() => {
 										setUpdate(update === "f2" ? "f1" : "f2");
@@ -413,6 +409,7 @@ function AddCosmetics() {
 									)}
 								</FormControl>
 							)}
+
 							<FormControl
 								onBlur={() => {
 									setUpdate(update === "f2" ? "f1" : "f2");
@@ -442,7 +439,6 @@ function AddCosmetics() {
 							<FormControl
 								onBlur={() => {
 									setUpdate(update === "f2" ? "f1" : "f2");
-									generatePreview(getValues("texture"));
 								}}
 								isInvalid={errors.frame_delay ? true : false}
 							>
